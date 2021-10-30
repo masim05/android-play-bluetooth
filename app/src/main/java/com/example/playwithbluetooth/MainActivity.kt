@@ -9,8 +9,9 @@ import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
+
+import android.location.LocationManager
 
 
 private const val TAG = "Main Activity"
@@ -23,17 +24,47 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Register for broadcasts when a device is discovered.
-        val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-        registerReceiver(receiver, filter)
-
-
         val button: Button = findViewById(R.id.scan_button)
         button.setOnClickListener {
+            Log.v(TAG, "button.setOnClickListener started")
             val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
             if (bluetoothAdapter == null) {
                 Log.e(TAG, "bluetoothAdapter is null")
+                return@setOnClickListener
             }
+
+            if (!bluetoothAdapter.isEnabled) {
+                // TODO to enable BT
+                Log.e(TAG, "bluetooth is disabled")
+                return@setOnClickListener
+            }
+
+            val locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+            val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+            if (!isGpsEnabled) {
+                // TODO to enable GPS
+                Log.e(TAG, "location is disabled")
+                return@setOnClickListener
+            }
+
+            if (bluetoothAdapter.isDiscovering) {
+                Log.v(TAG, "Discovering...")
+                val discoveryCancelled = bluetoothAdapter.cancelDiscovery()
+                Log.v(TAG, "discoveryCancelled: $discoveryCancelled")
+            }
+
+            // Register for broadcasts when a device is discovered.
+            val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+            registerReceiver(receiver, filter)
+            val discoveryStarted = bluetoothAdapter.startDiscovery()
+            Log.v(TAG, "discoveryStarted: $discoveryStarted")
+
+            /*
+            if (!bluetoothAdapter.startDiscovery()) {
+                Log.e(TAG, "startDiscovery() failed")
+                return@setOnClickListener
+            }
+            */
         }
     }
 
@@ -42,6 +73,7 @@ class MainActivity : AppCompatActivity() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
                 BluetoothDevice.ACTION_FOUND -> {
+                    Log.v(TAG, "On BluetoothDevice.ACTION_FOUND")
                     // Discovery has found a device. Get the BluetoothDevice
                     // object and its info from the Intent.
                     val device: BluetoothDevice? =

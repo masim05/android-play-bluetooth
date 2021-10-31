@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Play With Bluetooth</string>
-    <string name="title_activity_main">Main</string>
+    <string name="title_activity_main">PwBT</string>
 </resources>

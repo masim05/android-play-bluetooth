@@ -6,17 +6,21 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 
 import android.location.LocationManager
-
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 private const val TAG = "Main Activity"
-
+private val foundDevices = mutableListOf<BluetoothDevice>()
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,8 +52,7 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             try {
-                val location: Location? =
-                    locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
             } catch (e: SecurityException) {
                 Log.e(TAG, e.localizedMessage)
                 return@setOnClickListener
@@ -69,7 +72,18 @@ class MainActivity : AppCompatActivity() {
                 Log.e(TAG, "startDiscovery() failed")
                 return@setOnClickListener
             }
+
+            val recyclerView: RecyclerView = findViewById(R.id.deviceList)
+            recyclerView.layoutManager = LinearLayoutManager(this)
+            recyclerView.adapter = CustomRecyclerAdapter(foundDevices)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        // Don't forget to unregister the ACTION_FOUND receiver.
+        unregisterReceiver(receiver)
     }
 
     private val receiver = object : BroadcastReceiver() {
@@ -82,19 +96,39 @@ class MainActivity : AppCompatActivity() {
                     // object and its info from the Intent.
                     val device: BluetoothDevice? =
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-                    val deviceName = device?.name
-                    val deviceHardwareAddress = device?.address // MAC address
-                    Log.v(TAG, "$deviceName: $deviceHardwareAddress")
+                    foundDevices += device as BluetoothDevice
+                    Log.v(TAG, "${device?.name}: ${device?.address}")
                 }
             }
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        // Don't forget to unregister the ACTION_FOUND receiver.
-        unregisterReceiver(receiver)
-    }
 }
 
+class CustomRecyclerAdapter(private val devices: List<BluetoothDevice>) :
+    RecyclerView.Adapter<CustomRecyclerAdapter.DeviceHolder>(){
+
+        class DeviceHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+        var textView: TextView? = null
+
+        init {
+            textView = itemView.findViewById(R.id.textView)
+        }
+
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceHolder {
+        val itemView =
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.recyclerview_item, parent, false)
+        return DeviceHolder(itemView)
+    }
+
+    override fun onBindViewHolder(holder: DeviceHolder, position: Int) {
+        val device = devices[position]
+
+        "${device.name}: ${device.address}".also { holder.textView?.text = it }
+    }
+
+    override fun getItemCount() = devices.size
+}

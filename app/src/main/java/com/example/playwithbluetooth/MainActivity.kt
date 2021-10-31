@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         val button: Button = findViewById(R.id.scan_button)
         button.setOnClickListener {
             Log.v(TAG, "button.setOnClickListener started")
+            foundDevices.clear()
             val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
             if (bluetoothAdapter == null) {
                 Log.e(TAG, "bluetoothAdapter is null")

@@ -56,15 +56,11 @@ class MainActivity : AppCompatActivity() {
             // Register for broadcasts when a device is discovered.
             val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
             registerReceiver(receiver, filter)
-            val discoveryStarted = bluetoothAdapter.startDiscovery()
-            Log.v(TAG, "discoveryStarted: $discoveryStarted")
 
-            /*
             if (!bluetoothAdapter.startDiscovery()) {
                 Log.e(TAG, "startDiscovery() failed")
                 return@setOnClickListener
             }
-            */
         }
     }
 

@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -44,6 +45,13 @@ class MainActivity : AppCompatActivity() {
             if (!isGpsEnabled) {
                 // TODO to enable GPS
                 Log.e(TAG, "location is disabled")
+                return@setOnClickListener
+            }
+            try {
+                val location: Location? =
+                    locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            } catch (e: SecurityException) {
+                Log.e(TAG, e.localizedMessage)
                 return@setOnClickListener
             }
 

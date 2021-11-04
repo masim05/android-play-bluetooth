@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Play With Bluetooth</string>
     <string name="title_activity_main">PwBT</string>
-    <string name="textview">Some text</string>
+    <string name="textview">Press SCAN button.</string>
     <string name="scan">Scan</string>
+    <string name="error_bluetooth_adapter_is_null">Error: bluetoothAdapter is null.</string>
+    <string name="error_bluetooth_is_disabled">Error: bluetooth is disabled.</string>
+    <string name="error_location_is_disabled">Error: location is disabled.</string>
+    <string name="discovering">Discovering...</string>
+    <string name="error_start_discovery_failed">Error: startDiscovery() failed.</string>
+    <string name="discovery_finished">Discovery finished.</string>
 </resources>

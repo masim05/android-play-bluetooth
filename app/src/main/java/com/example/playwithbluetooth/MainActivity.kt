@@ -98,6 +98,9 @@ class MainActivity : AppCompatActivity() {
                     val device: BluetoothDevice? =
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                     foundDevices += device as BluetoothDevice
+                    val recyclerView: RecyclerView = findViewById(R.id.deviceList)
+                    recyclerView.adapter?.notifyItemInserted(foundDevices.size - 1)
+                    Log.v(TAG, foundDevices.toString())
                     Log.v(TAG, "${device?.name}: ${device?.address}")
                 }
             }
@@ -110,12 +113,7 @@ class CustomRecyclerAdapter(private val devices: List<BluetoothDevice>) :
     RecyclerView.Adapter<CustomRecyclerAdapter.DeviceHolder>() {
 
     class DeviceHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var textView: TextView? = null
-
-        init {
-            textView = itemView.findViewById(R.id.deviceView)
-        }
-
+        var textView: TextView = itemView.findViewById(R.id.deviceView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceHolder {

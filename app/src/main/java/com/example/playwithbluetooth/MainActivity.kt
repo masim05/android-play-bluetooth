@@ -107,13 +107,13 @@ class MainActivity : AppCompatActivity() {
 }
 
 class CustomRecyclerAdapter(private val devices: List<BluetoothDevice>) :
-    RecyclerView.Adapter<CustomRecyclerAdapter.DeviceHolder>(){
+    RecyclerView.Adapter<CustomRecyclerAdapter.DeviceHolder>() {
 
-        class DeviceHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+    class DeviceHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var textView: TextView? = null
 
         init {
-            textView = itemView.findViewById(R.id.textView)
+            textView = itemView.findViewById(R.id.deviceView)
         }
 
     }

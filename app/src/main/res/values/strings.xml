@@ -9,4 +9,9 @@
     <string name="discovering">Discovering...</string>
     <string name="error_start_discovery_failed">Error: startDiscovery() failed.</string>
     <string name="discovery_finished">Discovery finished.</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="bluetooth">BlueTooth</string>
+    <string name="wi_fi">Wi-Fi</string>
 </resources>
